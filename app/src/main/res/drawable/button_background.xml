@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="5dp"/>
+            <solid android:color="@color/colorPrimary"/>
+
+        </shape>
+
+    </item>
+    <!--<item android:drawable="@drawable/numpad_button_bg_pressed" android:state_enabled="false"></item>-->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/main_activity_corner_radius"/>
+            <solid android:color="@color/colorPrimary"/>
+        </shape>
+
+    </item>
+</selector>

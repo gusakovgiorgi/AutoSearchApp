@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Nettiauto</string>
+    <string name="main_activity_main_text">m.nettiauto.com auto searcher</string>
+    <string name="main_activity_first_url_text">First URL:</string>
+    <string name="main_activity_second_url_text">Second URL:</string>
+    <string name="paste_txt">paste</string>
+    <string name="main_activity_start_button_text">Start search</string>
+    <string name="main_activity_stop_button_text">Stop search</string>
+    <string name="main_activity_detail_button_text">See more</string>
+    <string name="main_activity_polling_frequency_text">Polling frequency in seconds</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="autolist_fragment_clear_button_text">Clear</string>
+</resources>

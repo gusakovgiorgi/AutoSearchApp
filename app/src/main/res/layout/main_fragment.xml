@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="net.gusakov.newnettiauto.MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/main_activity_main_text_margin_buttom"
+        android:textStyle="bold"
+        android:textSize="@dimen/main_activity_main_text_size"
+        android:text="@string/main_activity_main_text"
+        android:id="@+id/textView" >
+        <requestFocus/>
+    </TextView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="@dimen/main_activity_text_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/main_activity_text_size"
+            android:text="@string/main_activity_first_url_text"
+            android:id="@+id/textView3" />
+
+        <Button
+            android:id="@+id/firstUrlPasteButtonId"
+            android:layout_width="@dimen/main_activity_paste_button_width"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/main_activity_paste_button_text_size"
+            android:text="@string/paste_txt"/>
+
+        <EditText
+            android:id="@+id/firstUrlEditTextId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="@dimen/main_activity_text_width"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/main_activity_text_size"
+            android:text="@string/main_activity_second_url_text"
+            android:id="@+id/textView2" />
+        <Button
+            android:id="@+id/secondUrlPasteButtonId"
+            android:layout_width="@dimen/main_activity_paste_button_width"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/main_activity_paste_button_text_size"
+            android:text="@string/paste_txt"/>
+
+        <EditText
+            android:id="@+id/secondUrlEditTextId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"/>
+    </LinearLayout>
+
+    <TextView
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/polling_frequency_text_size"
+        android:text="@string/main_activity_polling_frequency_text"
+        />
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp">
+        <Button
+            android:id="@+id/minusBtnId"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/plus_minus_button"
+            android:text="-"/>
+
+        <EditText
+            android:layout_width="72dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:inputType="number"
+            android:background="@drawable/edit_text_background"
+            android:text="60"
+            android:id="@+id/pollFreqId" />
+
+        <Button
+            android:id="@+id/plusBtnId"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/plus_minus_button"
+            android:text="+"/>
+    </LinearLayout>
+
+
+    <Button
+        android:text="@string/main_activity_start_button_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/main_activity_start_button_margin"
+        android:layout_marginBottom="@dimen/main_activity_start_button_margin"
+        android:layout_gravity="center"
+        android:paddingLeft="@dimen/main_activity_start_button_padding"
+        android:paddingRight="@dimen/main_activity_start_button_padding"
+        android:background="@drawable/ripple"
+        android:textColor="@color/white"
+        android:id="@+id/startAndStopButtonId" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:padding="@dimen/main_activity_status_text_view_padding"
+            android:gravity="center_vertical"
+            android:layout_weight="3"
+            android:background="@drawable/status_textt_view_background"
+            android:id="@+id/statusTextViewId" />
+
+        <Button
+            android:id="@+id/moreBtnId"
+            android:layout_marginTop="3dp"
+            android:layout_width="wrap_content"
+            android:text="@string/main_activity_detail_button_text"
+            android:paddingLeft="@dimen/main_activity_status_text_view_padding"
+            android:paddingRight="@dimen/main_activity_status_text_view_padding"
+            android:textColor="@color/white"
+            android:background="@drawable/ripple"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+
+</LinearLayout>
