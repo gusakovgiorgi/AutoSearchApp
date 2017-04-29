@@ -114,6 +114,7 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
                         String yearAndmiliage = getYearAndMilliage(detailBox);
                         String seller = getSeller(detailBox);
                         boolean dealer = getDealer(detailBox);
+//                        String imageUrl=getImageUrl()
                         Auto auto = new Auto(id, autoName, autoDescription, price, yearAndmiliage, seller, linkHref,phoneNumberURI, dealer,System.currentTimeMillis());
                         invokeNewAutoListeners(auto);
                         Timber.d("id=" + id + ", car name=" + autoName + ", description=" + autoDescription + ", price=" + price + ", year=" + yearAndmiliage +

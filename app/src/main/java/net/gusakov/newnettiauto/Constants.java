@@ -17,6 +17,7 @@ public interface Constants {
         String DB_NAME = "auto.db";
         String DB_TABLE_AUTO = "auto_table";
         String TB_AUTO_ID = "auto_id";
+        String TB_AUTO_IMAGE_URL="auto_image_url";
         String TB_AUTO_NAME = "name";
         String TB_AUTO_DESCRIPTION = "description";
         String TB_AUTO_PRICE = "price";
@@ -32,6 +33,7 @@ public interface Constants {
         String DB_CREATE_STRING = "create table " + DB_TABLE_AUTO + " ("
                 + "_id integer primary key autoincrement, "
                 + TB_AUTO_ID + " integer, "
+                + TB_AUTO_IMAGE_URL+" text, "
                 + TB_AUTO_NAME + " text, "
                 + TB_AUTO_DESCRIPTION + " text, "
                 + TB_AUTO_PRICE + " integer, "

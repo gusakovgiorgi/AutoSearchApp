@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,7 @@ public class AutoCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
         // Find fields to populate in inflated template
+        ImageView imageView=(ImageView)view.findViewById(R.id.imageViewId);
         TextView name = (TextView) view.findViewById(R.id.nameId);
         TextView description = (TextView) view.findViewById(R.id.descriptionId);
         TextView price = (TextView) view.findViewById(R.id.priceId);
@@ -105,5 +107,6 @@ public class AutoCursorAdapter extends CursorAdapter {
         });
         view.setTag(new Auto(idInt,nameStr,descriptionStr,priceInt,yearAndMileageStr,sellerStr,linkStr,phoneUri,false,timestamp));
     }
+
 
 }

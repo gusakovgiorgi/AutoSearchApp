@@ -1,27 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/callAndNameId"
-        android:layout_width="match_parent"
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="16dp"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/imageViewId" />
+
+    <TextView
+        android:id="@+id/descriptionId"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:text="description"
+        android:textSize="@dimen/listview_description_text_size"
+        app:layout_constraintLeft_toRightOf="@+id/imageViewId"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/callBtnId" />
+
+    <TextView
+        android:id="@+id/priceId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="25000"
+        android:textSize="@dimen/listview_price_text_size"
+        android:layout_marginTop="13dp"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionId"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/yearsAndMileageId"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:gravity="right"
-        android:orientation="horizontal">
+        android:text="1995, 456tkm"
+        android:textSize="@dimen/listview_years_and_mileage_text_size"
+        app:layout_constraintBaseline_toBaselineOf="@+id/priceId"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/sellerId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Landzukic"
+        android:textSize="@dimen/listview_seller_text_size"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/priceId"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/dateId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="02.02.2017 14:45"
+        android:textSize="@dimen/listview_date_text_size"
+        app:layout_constraintBaseline_toBaselineOf="@+id/sellerId"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/callAndNameId"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="8dp"-->
+        <!--android:layout_marginRight="8dp"-->
+        <!--android:layout_marginTop="0dp"-->
+        <!--android:gravity="right"-->
+        <!--android:orientation="horizontal"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--tools:layout_constraintLeft_creator="1"-->
+        <!--tools:layout_constraintRight_creator="1"-->
+        <!--tools:layout_constraintTop_creator="1">-->
 
         <TextView
             android:id="@+id/nameId"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="main text"
             android:textSize="@dimen/listview_main_text_size"
-            android:textStyle="bold"></TextView>
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@+id/imageViewId"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp"></TextView>
 
         <Button
             android:id="@+id/callBtnId"
@@ -29,58 +109,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/listview_call_button_pading"
+            android:background="@drawable/ripple"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:background="@drawable/ripple"
             android:text="call"
-            android:textColor="@color/white" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/descriptionId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/callAndNameId"
-        android:text="description"
-        android:textSize="@dimen/listview_description_text_size" />
-
-    <TextView
-        android:id="@+id/priceId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/descriptionId"
-        android:text="25000"
-        android:textSize="@dimen/listview_price_text_size" />
-
-    <TextView
-        android:id="@+id/yearsAndMileageId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/descriptionId"
-        android:gravity="right"
-        android:text="1995, 456tkm"
-        android:textSize="@dimen/listview_years_and_mileage_text_size" />
-
-    <TextView
-        android:id="@+id/sellerId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/yearsAndMileageId"
-        android:text="Landzukic"
-        android:textSize="@dimen/listview_seller_text_size" />
-
-    <TextView
-        android:id="@+id/dateId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/sellerId"
-        android:layout_alignParentRight="true"
-        android:text="02.02.2017 14:45"
-        android:textSize="@dimen/listview_date_text_size" />
+            android:textColor="@color/white"
+            tools:layout_editor_absoluteY="4dp"
+            app:layout_constraintLeft_toRightOf="@+id/nameId"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="1.0" />
 
 
-</RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

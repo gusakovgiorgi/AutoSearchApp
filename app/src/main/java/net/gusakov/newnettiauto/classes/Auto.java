@@ -7,6 +7,7 @@ package net.gusakov.newnettiauto.classes;
 public class Auto {
     private int id;
     private String name;
+    private String imageUrlString;
     private String description;
     private int price;
     private String yearAndMileage;
@@ -22,7 +23,7 @@ public class Auto {
     public Auto(){
     }
 
-    public Auto(int id,String name, String description, int price, String yearAndMileage, String seller,String link,String phoneNumberURI, boolean isDealer,long timestamp) {
+    public Auto(int id,String name, String description, int price, String yearAndMileage, String seller,String link,String phoneNumberURI, boolean isDealer,long timestamp,String imageUrlString) {
         this.id=id;
         this.name = name;
         this.description = description;
@@ -33,6 +34,7 @@ public class Auto {
         this.phoneNumberURI =phoneNumberURI;
         this.isDealer = isDealer;
         this.timestamp=timestamp;
+        this.imageUrlString=imageUrlString;
     }
     public long getTimestamp() {
         return timestamp;
@@ -114,6 +116,14 @@ public class Auto {
 
     public boolean isDealer() {
         return isDealer;
+    }
+
+    public String getImageUrlString() {
+        return imageUrlString;
+    }
+
+    public void setImageUrlString(String imageUrlString) {
+        this.imageUrlString = imageUrlString;
     }
 }
 
