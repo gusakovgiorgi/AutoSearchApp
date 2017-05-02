@@ -28,7 +28,7 @@ public interface Constants {
         String TB_AUTO_TIMESTAMP = "timestamp";
 
 
-        int DB_VERSION = 1;
+        int DB_VERSION = 3;
 
         String DB_CREATE_STRING = "create table " + DB_TABLE_AUTO + " ("
                 + "_id integer primary key autoincrement, "
@@ -60,7 +60,8 @@ public interface Constants {
                 + AUTHORITY + "." + AUTO_PATH;
         String DEFAULT_SORT_ORDER = DBConstants.TB_AUTO_TIMESTAMP + " DESC";
         String[] projection = new String[]{BaseColumns._ID, DBConstants.TB_AUTO_ID, DBConstants.TB_AUTO_NAME, DBConstants.TB_AUTO_DESCRIPTION, DBConstants.TB_AUTO_PRICE,
-                DBConstants.TB_AUTO_YEAR_AND_MILLEAGE, DBConstants.TB_AUTO_SELLER, DBConstants.TB_AUTO_LINK, DBConstants.TB_AUTO_PHONE_URI, DBConstants.TB_AUTO_TIMESTAMP};
+                DBConstants.TB_AUTO_YEAR_AND_MILLEAGE, DBConstants.TB_AUTO_SELLER, DBConstants.TB_AUTO_LINK, DBConstants.TB_AUTO_PHONE_URI, DBConstants.TB_AUTO_TIMESTAMP,
+                DBConstants.TB_AUTO_IMAGE_URL};
     }
 
     interface MainFragmentConstants {
@@ -105,6 +106,7 @@ public interface Constants {
         String AUTO_MAIN_ELEMENT_CLASS_NAME = "block_list_li";
         String AUTO_MAIN_RECLAME_ELEMENT_CLASS_NAME = "upsellAd";
         String AUTO_DETAIL_BOX_CLASS_NAME = "detail_box";
+        String AUTO_THUMB_BOX_CLASS_NAME = "thumb";
         String AUTO_DETAIL_DEALER_NAME = "dealer_logo block_box fl";
         int QUEUE_MAX_CAPACITY = 10;
         int READ_TIMEOUT = 2000;

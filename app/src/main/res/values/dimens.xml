@@ -15,7 +15,7 @@
     <dimen name="main_activity_corner_radius">8dp</dimen>
     <dimen name="polling_frequency_text_size">16sp</dimen>
 
-    <dimen name="listview_main_text_size">24sp</dimen>
+    <dimen name="listview_main_text_size">30sp</dimen>
     <dimen name="listview_description_text_size">22sp</dimen>
     <dimen name="listview_price_text_size">20sp</dimen>
     <dimen name="listview_years_and_mileage_text_size">19sp</dimen>

@@ -107,6 +107,7 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
                     String linkHref = getLink(element);
                     String phoneNumberURI = getPhoneNumberURI(linkHref);
                     Elements detailBox = element.getElementsByClass(AUTO_DETAIL_BOX_CLASS_NAME);
+                    Elements thumbBox=element.getElementsByClass(AUTO_THUMB_BOX_CLASS_NAME);
                     if (!detailBox.isEmpty()) {
                         String autoName = getAutoName(detailBox);
                         String autoDescription = getAutoDescription(detailBox);
@@ -114,8 +115,8 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
                         String yearAndmiliage = getYearAndMilliage(detailBox);
                         String seller = getSeller(detailBox);
                         boolean dealer = getDealer(detailBox);
-//                        String imageUrl=getImageUrl()
-                        Auto auto = new Auto(id, autoName, autoDescription, price, yearAndmiliage, seller, linkHref,phoneNumberURI, dealer,System.currentTimeMillis());
+                        String imageUrl=getImageUrl(thumbBox);
+                        Auto auto = new Auto(id, autoName, autoDescription, price, yearAndmiliage, seller, linkHref,phoneNumberURI, dealer,System.currentTimeMillis(),imageUrl);
                         invokeNewAutoListeners(auto);
                         Timber.d("id=" + id + ", car name=" + autoName + ", description=" + autoDescription + ", price=" + price + ", year=" + yearAndmiliage +
                                 ", seller=" + seller + ", dealer=" + dealer + ", url=" + linkHref);
@@ -136,6 +137,7 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
             }
         }
     }
+
 
 
     private String getPhoneNumberURI(String linkHref) {
@@ -328,7 +330,7 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
 
     private String getYearAndMilliage(Elements detailBox) {
         try {
-            Node node = detailBox.get(0).childNode(7);
+            Node node = detailBox.get(0).childNode(8);
 //            Log.v(TAG, "childNode=" + node.toString());
             if (node instanceof TextNode) {
                 return ((TextNode) node).text();
@@ -368,6 +370,14 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
     private String getLink(Element element) {
         try {
             return element.child(0).child(0).attr("href");
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    private String getImageUrl(Elements element) {
+        try {
+            return element.get(0).child(2).attr("src");
         } catch (NullPointerException e) {
             return null;
         }

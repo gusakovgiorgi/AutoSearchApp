@@ -212,6 +212,7 @@ public class AutoSearchService extends Service implements Constants.ServiceConst
         cv.put(Constants.DBConstants.TB_AUTO_SELLER,auto.getSeller());
         cv.put(Constants.DBConstants.TB_AUTO_TIMESTAMP,auto.getTimestamp());
         cv.put(Constants.DBConstants.TB_AUTO_YEAR_AND_MILLEAGE,auto.getYearAndMileage());
+        cv.put(Constants.DBConstants.TB_AUTO_IMAGE_URL,auto.getImageUrlString());
         getContentResolver().insert(Constants.ProviderConstants.AUTO_CONTENT_URI,cv);
     }
 

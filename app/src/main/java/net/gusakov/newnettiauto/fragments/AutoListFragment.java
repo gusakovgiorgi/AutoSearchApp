@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import net.gusakov.newnettiauto.Constants;
 import net.gusakov.newnettiauto.R;
 import net.gusakov.newnettiauto.adapters.AutoCursorAdapter;
@@ -128,9 +130,12 @@ public class AutoListFragment extends ListFragment implements LoaderManager.Load
             @Override
             public void onClick(View v) {
                 removeAllAutoRecords();
+                clearImageChache();
             }
         });
     }
+
+
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -142,6 +147,11 @@ public class AutoListFragment extends ListFragment implements LoaderManager.Load
 
     private void removeAllAutoRecords() {
         getActivity().getContentResolver().delete(Constants.ProviderConstants.AUTO_CONTENT_URI,null,null);
+    }
+
+    private void clearImageChache() {
+        ImageLoader.getInstance().clearMemoryCache();
+        ImageLoader.getInstance().clearDiskCache();
     }
 
 

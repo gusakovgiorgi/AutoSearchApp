@@ -308,17 +308,19 @@ public class MainFragment extends Fragment {
             public void onClick(View v) {
                 ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                 String pasteData = "";
-                // If it does contain data, decide if you can handle the data.
-                if (clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN)) {
-                    //since the clipboard contains plain text.
-                    ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
 
-                    // Gets the clipboard as text.
-                    pasteData = item.getText().toString();
-                    playSound(pasteSound);
+                    // If it does contain data, decide if you can handle the data.
+                    if (clipboard.getPrimaryClipDescription()!=null && clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN)) {
+                        //since the clipboard contains plain text.
+                        ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
 
-                }
-                firstEditText.setText(pasteData);
+                        // Gets the clipboard as text.
+                        pasteData = item.getText().toString();
+                        playSound(pasteSound);
+
+                    }
+                    firstEditText.setText(pasteData);
+
             }
         });
         secondPastebtn.setOnClickListener(new View.OnClickListener() {
@@ -328,7 +330,7 @@ public class MainFragment extends Fragment {
                 String pasteData = "";
 
 // If it does contain data, decide if you can handle the data.
-                if (clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN)) {
+                if (clipboard.getPrimaryClipDescription()!=null && clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN)) {
                     //since the clipboard contains plain text.
                     ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
 
