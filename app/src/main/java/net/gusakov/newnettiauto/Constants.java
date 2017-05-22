@@ -5,6 +5,8 @@ import android.provider.BaseColumns;
 
 import net.gusakov.newnettiauto.fragments.MainFragment;
 
+import java.util.Date;
+
 /**
  * Created by hasana on 4/2/2017.
  */
@@ -12,6 +14,8 @@ import net.gusakov.newnettiauto.fragments.MainFragment;
 public interface Constants {
 
     String OPEN_LIST_ACTION = "net.gusakov.newnettiauto.fragments.action_open_list";
+    String DATE_TIMESTAMP_LINK="http://www.convert-unix-time.com/api?timestamp=now";
+    long END_TIMESTAMP =1497326659L;
 
     interface DBConstants {
         String DB_NAME = "auto.db";
@@ -76,6 +80,9 @@ public interface Constants {
         String STOP_BUTTON_TAG = "stop";
         int MINIMUM_TIME = 0;
         int MAXIMUM_TIME = 24 * 60 * 60;
+    }
+    interface BlockAppFragmentConstants{
+        String INTENT_EXTRA_LONG_TIMESTAMP="timestam";
     }
 
     interface ServiceConstants {

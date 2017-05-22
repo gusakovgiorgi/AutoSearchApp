@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +57,8 @@ public class MainFragment extends Fragment {
     public Button minusBtn;
     @BindView(R.id.pollFreqId)
     public EditText pollFreqEditText;
+    @BindView(R.id.trialImageId)
+    ImageView trialImageView;
 
     private SoundPool soundPool;
     private int buttonClickSound;
@@ -403,11 +406,19 @@ public class MainFragment extends Fragment {
                 }
             }
         });
+
+        trialImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.showTrialPeriod();
+            }
+        });
     }
 
     //############################ interface ##########################################
     public interface OnFragmentClickEventListener {
         void moreButtonClickEvent();
+        void showTrialPeriod();
     }
 
 }

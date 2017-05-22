@@ -45,7 +45,7 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
     private NewAutoListener listener;
     private Handler handler;
     private static final Pattern mPattern
-            = Pattern.compile(" <li class=\"block_list_li \" data-pagenum=\"1\">.+?(?=<\\/li>)",Pattern.DOTALL);
+            = Pattern.compile(" <li class=\"block_list_li  \" data-pagenum=\"1\">.+?(?=<\\/li>)",Pattern.DOTALL);
 
 
 
@@ -61,7 +61,7 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
         String previousHTMLString;
         if ((previousHTMLString=previousStringsMap.get(internetData.getURL()))!=null) {
             if (previousHTMLString.equals(currentHtmlString)) {
-//                Timber.d("same html, return");
+                Timber.d("same html, return");
                 return;
             }
         }
@@ -360,7 +360,7 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
 
     private String getAutoName(Elements detailBox) {
         try {
-            return detailBox.get(0).child(0).text();
+            return detailBox.get(0).child(0).text()+detailBox.get(0).childNode(2).toString();
         } catch (NullPointerException e) {
             return null;
         }

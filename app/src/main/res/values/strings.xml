@@ -9,6 +9,6 @@
     <string name="main_activity_detail_button_text">See more</string>
     <string name="main_activity_polling_frequency_text">Polling frequency in seconds</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="block_fragment_main_text">Your Trial period is end.</string>
     <string name="autolist_fragment_clear_button_text">Clear</string>
 </resources>

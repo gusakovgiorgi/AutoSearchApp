@@ -11,13 +11,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/main_activity_main_text_margin_buttom"
         android:textStyle="bold"
         android:textSize="@dimen/main_activity_main_text_size"
         android:text="@string/main_activity_main_text"
         android:id="@+id/textView" >
         <requestFocus/>
     </TextView>
+
+    <ImageView
+        android:id="@+id/trialImageId"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/trial_icon"
+        android:layout_gravity="right"/>
 
     <LinearLayout
         android:orientation="horizontal"
