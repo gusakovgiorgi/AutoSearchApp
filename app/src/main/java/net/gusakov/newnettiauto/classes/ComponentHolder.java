@@ -7,12 +7,6 @@ import android.os.Build;
 import android.os.PowerManager;
 import android.os.Vibrator;
 
-
-/**
- * Created by hasana on 4/4/2017.
- * singleton class
- */
-
 public class ComponentHolder {
 
     private static ComponentHolder mComponentHolder;

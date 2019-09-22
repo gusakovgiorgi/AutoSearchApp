@@ -1,33 +1,22 @@
 package net.gusakov.newnettiauto;
 
-import android.app.Activity;
-import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.app.FragmentTransaction;
-import android.support.annotation.MainThread;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
-
-import net.gusakov.newnettiauto.Loaders.TimestampLoader;
 import net.gusakov.newnettiauto.classes.Auto;
 import net.gusakov.newnettiauto.classes.ComponentHolder;
 import net.gusakov.newnettiauto.fragments.AutoListFragment;
-import net.gusakov.newnettiauto.fragments.BlockAppFragment;
 import net.gusakov.newnettiauto.fragments.MainFragment;
 import net.gusakov.newnettiauto.services.AutoSearchService;
 
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,8 +25,7 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 
-public class MainActivity extends AppCompatActivity implements AutoSearchService.CallBack, MainFragment.OnFragmentClickEventListener,
-        LoaderManager.LoaderCallbacks<Long>{
+public class MainActivity extends AppCompatActivity implements AutoSearchService.CallBack, MainFragment.OnFragmentClickEventListener {
 
     private ServiceConnection mServiceConnection;
     private MainFragment mainFragment;
@@ -46,11 +34,7 @@ public class MainActivity extends AppCompatActivity implements AutoSearchService
     private ComponentHolder mComponentHolder = ComponentHolder.getInstance();
     private Timer mTimer;
     private TimerTask mTask;
-    private long mCurrentTimestamp;
-    private boolean isBlocked;
 
-    @BindView(R.id.progressBarId)
-    ProgressBar mProgressBar;
     @BindView(R.id.frgmCont)
     FrameLayout mFrameLayout;
 
@@ -60,8 +44,6 @@ public class MainActivity extends AppCompatActivity implements AutoSearchService
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        getSupportLoaderManager().initLoader(0,null,this);
 
 //        FirebaseDatabase db = FirebaseDatabase.getInstance();
 //        db.getReference().setValue(ServerValue.TIMESTAMP);
@@ -90,22 +72,9 @@ public class MainActivity extends AppCompatActivity implements AutoSearchService
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         bindToMyService();
-//        initFragments();
+        initFragments();
 
     }
-
-    private void sheduleBlockTime(long curTimestamp) {
-        if(mTask!=null){
-            mTask.cancel();
-            mTask=new CustomTimerTask();
-        }else {
-            mTask=new CustomTimerTask();
-            mTimer = new Timer();
-        }
-        mTimer.schedule(mTask,(Constants.END_TIMESTAMP-curTimestamp)*1000);
-        Timber.d("shedulled in "+(Constants.END_TIMESTAMP -curTimestamp));
-    }
-
 
 
     @Override
@@ -142,21 +111,12 @@ public class MainActivity extends AppCompatActivity implements AutoSearchService
     }
 
     @Override
-    public void onBackPressed() {
-        if(isBlocked){
-            finish();
-        }else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         Timber.d("onDestroy()");
         mComponentHolder = null;
-        if(mTask!=null) {
+        if (mTask != null) {
             mTask.cancel();
-            mTask=null;
+            mTask = null;
         }
         super.onDestroy();
     }
@@ -171,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements AutoSearchService
 
     @Override
     public void stopServiceAction() {
-        if(mComponentHolder.isServiceRunning()) {
+        if (mComponentHolder.isServiceRunning()) {
             Intent stopIntent = new Intent(this, AutoSearchService.class);
             stopService(stopIntent);
         }
@@ -184,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements AutoSearchService
 
     @Override
     public void showTrialPeriod() {
-        initBlockFragment(false,mCurrentTimestamp);
+
     }
 
     private void openListFragment() {
@@ -214,26 +174,6 @@ public class MainActivity extends AppCompatActivity implements AutoSearchService
         };
     }
 
-    @MainThread
-    private void initBlockFragment(boolean blocking,Long currentTimeStamp) {
-        isBlocked=blocking;
-        BlockAppFragment blockAppFragment;
-        if((blockAppFragment=(BlockAppFragment) getFragmentManager().findFragmentByTag(BlockAppFragment.TAG))!=null){
-            blockAppFragment.refreshScreen(currentTimeStamp);
-            if(blocking){
-                stopServiceAction();
-            }
-        }else {
-            fTrans = getFragmentManager().beginTransaction();
-            fTrans.replace(R.id.frgmCont, BlockAppFragment.newInstance(currentTimeStamp), BlockAppFragment.TAG);
-            if (!blocking) {
-                fTrans.addToBackStack(null);
-            }else {
-                stopServiceAction();
-            }
-            fTrans.commit();}
-    }
-
 
     private void initFragments() {
         mainFragment = new MainFragment();
@@ -244,46 +184,6 @@ public class MainActivity extends AppCompatActivity implements AutoSearchService
         if (mComponentHolder.isServiceRunning()) {
             moreButtonClickEvent();
         }
-    }
-
-
-    class CustomTimerTask extends TimerTask{
-        @Override
-        public void run() {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    initBlockFragment(true,null);
-                }
-            });
-        }
-    }
-
-
-    @Override
-    public Loader<Long> onCreateLoader(int id, Bundle args) {
-        Timber.d("create loader");
-        return new TimestampLoader(this);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Long> loader, Long data) {
-        Timber.d("finishedLoading. data="+data);
-        mProgressBar.setVisibility(View.INVISIBLE);
-        mCurrentTimestamp=data;
-        if ( mCurrentTimestamp> Constants.END_TIMESTAMP) {
-            initBlockFragment(true,null);
-        }else{
-            initFragments();
-            sheduleBlockTime(mCurrentTimestamp);
-        }
-        mFrameLayout.setVisibility(View.VISIBLE);
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Long> loader) {
-        Timber.d("reset loader");
     }
 }
 

@@ -3,25 +3,17 @@ package net.gusakov.newnettiauto;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import net.gusakov.newnettiauto.fragments.MainFragment;
-
-import java.util.Date;
-
-/**
- * Created by hasana on 4/2/2017.
- */
-
 public interface Constants {
 
     String OPEN_LIST_ACTION = "net.gusakov.newnettiauto.fragments.action_open_list";
-    String DATE_TIMESTAMP_LINK="http://www.convert-unix-time.com/api?timestamp=now";
-    long END_TIMESTAMP =1497326659L;
+    String DATE_TIMESTAMP_LINK = "http://www.convert-unix-time.com/api?timestamp=now";
+    long END_TIMESTAMP = 1512086400L;
 
     interface DBConstants {
         String DB_NAME = "auto.db";
         String DB_TABLE_AUTO = "auto_table";
         String TB_AUTO_ID = "auto_id";
-        String TB_AUTO_IMAGE_URL="auto_image_url";
+        String TB_AUTO_IMAGE_URL = "auto_image_url";
         String TB_AUTO_NAME = "name";
         String TB_AUTO_DESCRIPTION = "description";
         String TB_AUTO_PRICE = "price";
@@ -37,7 +29,7 @@ public interface Constants {
         String DB_CREATE_STRING = "create table " + DB_TABLE_AUTO + " ("
                 + "_id integer primary key autoincrement, "
                 + TB_AUTO_ID + " integer, "
-                + TB_AUTO_IMAGE_URL+" text, "
+                + TB_AUTO_IMAGE_URL + " text, "
                 + TB_AUTO_NAME + " text, "
                 + TB_AUTO_DESCRIPTION + " text, "
                 + TB_AUTO_PRICE + " integer, "
@@ -69,7 +61,7 @@ public interface Constants {
     }
 
     interface MainFragmentConstants {
-        int POLLING_FREQYENCY_DEFAULT = 1;
+        int POLLING_FREQYENCY_DEFAULT = 3;
         String SEARCHING = "searching";
         String STOPED = "stopped";
         String START_BUTTON_TAG = "start";
@@ -81,8 +73,9 @@ public interface Constants {
         int MINIMUM_TIME = 0;
         int MAXIMUM_TIME = 24 * 60 * 60;
     }
-    interface BlockAppFragmentConstants{
-        String INTENT_EXTRA_LONG_TIMESTAMP="timestam";
+
+    interface BlockAppFragmentConstants {
+        String INTENT_EXTRA_LONG_TIMESTAMP = "timestam";
     }
 
     interface ServiceConstants {
@@ -100,8 +93,8 @@ public interface Constants {
         String SHARED_PARAMETER_STRING_URL1 = "url1";
         String SHARED_PARAMETER_STRING_URL2 = "url2";
         String SHARED_PARAMETER_INT_TIME = "time";
-        String FIRST_DEFAULT_URL = "https://m.nettiauto.com/toyota/hiace?sortCol=datecreate&ord=DESC&id_make=79&id_model=902&yfrom=1997&yto=2012";
-        String SECOND_DEFAULT_URL = "https://m.nettiauto.com/toyota/hilux?sortCol=datecreate&ord=DESC&id_make=79&id_model=903&yfrom=1989&yto=2010";
+        String FIRST_DEFAULT_URL = "https://www.nettiauto.com/toyota/hiace?sortCol=datecreate&ord=DESC&id_make=79&id_model=902&yfrom=1997&yto=2012";
+        String SECOND_DEFAULT_URL = "https://www.nettiauto.com/toyota/hilux?sortCol=datecreate&ord=DESC&id_make=79&id_model=903&yfrom=1989&yto=2010";
     }
 
     interface InternetSearcherConstants {

@@ -26,6 +26,7 @@ import net.gusakov.newnettiauto.classes.ComponentHolder;
 import net.gusakov.newnettiauto.classes.HTMLParser;
 import net.gusakov.newnettiauto.classes.InternetData;
 import net.gusakov.newnettiauto.classes.InternetSearcher;
+import net.gusakov.newnettiauto.classes.NewAutoListener;
 import net.gusakov.newnettiauto.classes.NotificationManager;
 
 import java.net.MalformedURLException;
@@ -139,7 +140,7 @@ public class AutoSearchService extends Service implements Constants.ServiceConst
                     threads.add(secondInternetSearcher.startInNewThread());
                 }
                 parser = new HTMLParser(getApplicationContext(), queue, handler);
-                parser.setOnNewAutoListener(new HTMLParser.NewAutoListener() {
+                parser.setOnNewAutoListener(new NewAutoListener() {
                     @Override
                     public void newAutoEvent(Auto auto) {
                         playSound(newAutoSound);

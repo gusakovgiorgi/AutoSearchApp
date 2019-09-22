@@ -1,9 +1,5 @@
 package net.gusakov.newnettiauto.classes;
 
-/**
- * Created by hasana on 4/4/2017.
- */
-
 public class InternetData {
     private String URL;
     private String HTML;

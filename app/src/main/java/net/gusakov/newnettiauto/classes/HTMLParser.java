@@ -21,6 +21,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.regex.Matcher;
@@ -28,109 +30,84 @@ import java.util.regex.Pattern;
 
 import timber.log.Timber;
 
-/**
- * Created by hasana on 2/16/2017.
- */
-
-public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
-
-    private Document doc;
-//    private Context ctx;
+public class HTMLParser implements Runnable, Constants.HTMLParserConstants {
     private final BlockingQueue<InternetData> queue;
-    //    private Deque<Integer> idStack =new ArrayDeque<>();
     private ArrayList<Integer> allGettedIds;
     private ArrayList<Integer> idList;
-    private Map<String,ArrayList> queueByUrl=new HashMap<>(2,1F);
-    private Map<String,String> previousStringsMap=new HashMap<>(2,1F);
+    private Map<String, ArrayList<Integer>> queueByUrl = new HashMap<>(2, 1F);
+    private Map<String, String> previousStringsMap = new HashMap<>(2, 1F);
     private NewAutoListener listener;
     private Handler handler;
-    private static final Pattern mPattern
-            = Pattern.compile(" <li class=\"block_list_li  \" data-pagenum=\"1\">.+?(?=<\\/li>)",Pattern.DOTALL);
+    private static final Pattern autoRelatedDataPattern
+            = Pattern.compile("<div class=\"listingVifUrl tricky_link_listing listing_nl.+?(?=<div class=\"listingVifUrl)", Pattern.DOTALL);
 
 
-
-    public HTMLParser(Context ctx, BlockingQueue<InternetData> queue,Handler handler) {
+    public HTMLParser(Context ctx, BlockingQueue<InternetData> queue, Handler handler) {
 //        this.ctx = ctx;
         this.queue = queue;
         this.handler = handler;
     }
 
     public void parse() throws InterruptedException {
-        InternetData internetData=queue.take();
-        String currentHtmlString= getStringOnlyWithAutoHTMLData(internetData.getHTML());
-        String previousHTMLString;
-        if ((previousHTMLString=previousStringsMap.get(internetData.getURL()))!=null) {
-            if (previousHTMLString.equals(currentHtmlString)) {
+        InternetData internetData = queue.take();
+        String previousData;
+        if ((previousData = previousStringsMap.get(internetData.getURL())) != null) {
+            if (previousData.equals(internetData.getHTML())) {
                 Timber.d("same html, return");
                 return;
             }
         }
-        previousStringsMap.put(internetData.getURL(),currentHtmlString);
-        doc = Jsoup.parse(currentHtmlString);
-        if((idList =queueByUrl.get(internetData.getURL()))==null){
-            idList =new ArrayList<>(11);
+        previousStringsMap.put(internetData.getURL(), internetData.getHTML());
+        if ((idList = queueByUrl.get(internetData.getURL())) == null) {
+            idList = new ArrayList<>(11);
             queueByUrl.put(internetData.getURL(), idList);
         }
 //        Log.v(TAG, "parsing starting. URL="+doc.location());
-        searchNormalAuros(internetData.getURL());
+        searchNormalAuros(internetData);
     }
 
 
-    private void searchNormalAuros(String url) {
-        int numberoOfSeenCars=0;
-        Elements autos = doc.getElementsByClass(AUTO_MAIN_ELEMENT_CLASS_NAME).not("."+AUTO_MAIN_RECLAME_ELEMENT_CLASS_NAME);
-        doc=null;
-        StringBuilder sb=new StringBuilder();
-        allGettedIds=new ArrayList<Integer>(11);
-        for (int i=0;i<autos.size();i++) {
-            Element element = autos.get(i);
-            sb.append(getId(element)).append(" , ");
-            if(i<QUEUE_MAX_CAPACITY) {
-                allGettedIds.add(getId(element));
+    private void searchNormalAuros(InternetData internetData) {
+        int numberoOfSeenCars = 0;
+        List<Auto> autos = extractAutos(internetData.getHTML());
+        StringBuilder sb = new StringBuilder();
+        allGettedIds = new ArrayList<Integer>(11);
+
+        for (int i = 0; i < autos.size(); i++) {
+            if (i == QUEUE_MAX_CAPACITY) {
+                break;
             }
+            allGettedIds.add(autos.get(i).getId());
         }
-        for (Element element : autos) {
-            int id = getId(element);
+        for (Auto auto : autos) {
+            int id = auto.getId();
+            auto.getPhoneNumberURI();
             if (Auto.isValidId(id)) {
-                if (normalAutofirstTimeSearch(url)) {
-                    Timber.i("first search, url="+url);
+                if (normalAutofirstTimeSearch()) {
+                    Timber.i("first search, url=" + internetData.getURL());
                     rememberToQueue(id);
-                    if(idList.size()<QUEUE_MAX_CAPACITY){
+                    if (idList.size() < QUEUE_MAX_CAPACITY) {
                         continue;
-                    }else{
+                    } else {
                         return;
                     }
                 } else if (isNewAuto(id)) {
                     Timber.d(sb.toString());
                     Timber.d("new auto");
-
-                    String linkHref = getLink(element);
-                    String phoneNumberURI = getPhoneNumberURI(linkHref);
-                    Elements detailBox = element.getElementsByClass(AUTO_DETAIL_BOX_CLASS_NAME);
-                    Elements thumbBox=element.getElementsByClass(AUTO_THUMB_BOX_CLASS_NAME);
-                    if (!detailBox.isEmpty()) {
-                        String autoName = getAutoName(detailBox);
-                        String autoDescription = getAutoDescription(detailBox);
-                        int price = getAutoPrice(detailBox);
-                        String yearAndmiliage = getYearAndMilliage(detailBox);
-                        String seller = getSeller(detailBox);
-                        boolean dealer = getDealer(detailBox);
-                        String imageUrl=getImageUrl(thumbBox);
-                        Auto auto = new Auto(id, autoName, autoDescription, price, yearAndmiliage, seller, linkHref,phoneNumberURI, dealer,System.currentTimeMillis(),imageUrl);
-                        invokeNewAutoListeners(auto);
-                        Timber.d("id=" + id + ", car name=" + autoName + ", description=" + autoDescription + ", price=" + price + ", year=" + yearAndmiliage +
-                                ", seller=" + seller + ", dealer=" + dealer + ", url=" + linkHref);
-                    } else {
-                        Timber.i("cann't get detailBox");
-                    }
+                    // load phone number
+                    auto.getPhoneNumberURI();
+                    Timber.d("id=" + id + ", car name=" + auto.getName() + ", description=" + auto.getDescription() + ", price=" + auto.getPrice() +
+                            ", yearAndMileage=" + auto.getYearAndMileage() +
+                            ", seller=" + auto.getSeller() + ", dealer=" + auto.isDealer() + ", url=" + auto.getLink());
+                    invokeNewAutoListeners(auto);
                     rememberToQueue(id);
                     numberoOfSeenCars++;
-                    if(numberoOfSeenCars>=QUEUE_MAX_CAPACITY){
+                    if (numberoOfSeenCars >= QUEUE_MAX_CAPACITY) {
                         break;
                     }
-                }else{
+                } else {
                     numberoOfSeenCars++;
-                    if(numberoOfSeenCars>=QUEUE_MAX_CAPACITY){
+                    if (numberoOfSeenCars >= QUEUE_MAX_CAPACITY) {
                         break;
                     }
                 }
@@ -139,21 +116,20 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
     }
 
 
-
     private String getPhoneNumberURI(String linkHref) {
         URLConnection urlConnection;
         BufferedReader in = null;
         StringBuilder sb = new StringBuilder();
         try {
             urlConnection = new URL(linkHref).openConnection();
-            Timber.d("connect to "+linkHref);
+            Timber.d("connect to " + linkHref);
             urlConnection.setReadTimeout(READ_TIMEOUT);
             urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
             urlConnection.setUseCaches(false);
 //            urlConnection.setDoOutput(true);
-            urlConnection.setRequestProperty("User-Agent",System.getProperty("http.agent"));
+            urlConnection.setRequestProperty("User-Agent", System.getProperty("http.agent"));
             urlConnection.connect();
-            in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"Cp1252"));
+            in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "Cp1252"));
             char[] buf = new char[4000];
             int number;
             while ((number = in.read(buf)) != -1) {
@@ -165,11 +141,11 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
         } catch (IOException e) {
             Timber.d(" get exception");
             e.printStackTrace();
-        }finally {
-            if(in!=null){
+        } finally {
+            if (in != null) {
                 try {
                     in.close();
-                    urlConnection=null;
+                    urlConnection = null;
                 } catch (IOException e) {
                     Timber.d(" get exception");
                     e.printStackTrace();
@@ -177,42 +153,41 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
             }
         }
 
-        String telNumber=null;
-        Document doc=Jsoup.parse(sb.toString());
+        String telNumber = null;
+        Document doc = Jsoup.parse(sb.toString());
         Elements elements = doc.getElementsByAttributeValueContaining("href", "textToImageCall.php");
-        Timber.d("elements size : "+elements.size());
-        if(!elements.isEmpty()) {
+        Timber.d("elements size : " + elements.size());
+        if (!elements.isEmpty()) {
             Element element = elements.first();
 //            Log.v(TAG,"get link for phone param");
-            HttpURLConnection httpURLConnection=null;
+            HttpURLConnection httpURLConnection = null;
             try {
-                httpURLConnection = (HttpURLConnection)new URL(element.attr("href")).openConnection();
+                httpURLConnection = (HttpURLConnection) new URL(element.attr("href")).openConnection();
                 httpURLConnection.setInstanceFollowRedirects(false);
                 httpURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
-                httpURLConnection.setRequestProperty("User-Agent",System.getProperty("http.agent"));
+                httpURLConnection.setRequestProperty("User-Agent", System.getProperty("http.agent"));
                 httpURLConnection.setUseCaches(false);
                 httpURLConnection.connect();
-                Timber.d("responceCode = "+httpURLConnection.getContent());
+                Timber.d("responceCode = " + httpURLConnection.getContent());
 //                httpURLConnection.getResponseMessage();
-                telNumber=httpURLConnection.getHeaderField("Location");
-                Timber.d("get number uri "+telNumber);
+                telNumber = httpURLConnection.getHeaderField("Location");
+                Timber.d("get number uri " + telNumber);
 
             } catch (IOException e) {
                 e.printStackTrace();
-            }finally {
-                if(httpURLConnection!=null) {
+            } finally {
+                if (httpURLConnection != null) {
                     httpURLConnection.disconnect();
-                    httpURLConnection=null;
+                    httpURLConnection = null;
                 }
             }
 //                    Log.d("TestInternet", urlConnection.getHeaderField("Location"));
         }
         return telNumber;
-
     }
 
-    public Thread startInNewThread(){
-        Thread thread= new Thread(this);
+    public Thread startInNewThread() {
+        Thread thread = new Thread(this);
         thread.setName(HTMLParser.class.getSimpleName());
         thread.start();
         return thread;
@@ -220,7 +195,7 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
 
     private void invokeNewAutoListeners(final Auto auto) {
 
-        if(listener!=null) {
+        if (listener != null) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -232,9 +207,9 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
 
     private boolean isNewAuto(int id) {
 //        return db.isNewAuto(id);
-        Iterator<Integer> idIterator= idList.iterator();
-        while(idIterator.hasNext()){
-            if(id==idIterator.next()){
+        Iterator<Integer> idIterator = idList.iterator();
+        while (idIterator.hasNext()) {
+            if (id == idIterator.next()) {
                 return false;
             }
         }
@@ -242,178 +217,67 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
     }
 
     private void rememberToQueue(int id/*,String url*/) {
-        Timber.i("rememeber id = "+id);
+        Timber.i("rememeber id = " + id);
 //        db.rememberToQueue(id,url);
-        if(idList.size()>=QUEUE_MAX_CAPACITY){
-            removeItemFromQueue(idList,allGettedIds);
+        if (idList.size() >= QUEUE_MAX_CAPACITY) {
+            removeItemFromQueue(idList, allGettedIds);
             idList.add(id);
-        }else {
+        } else {
             idList.add(id);
         }
-        Iterator<Integer> iterator= idList.iterator();
-        StringBuilder sb=new StringBuilder();
-        while (iterator.hasNext()){
+        Iterator<Integer> iterator = idList.iterator();
+        StringBuilder sb = new StringBuilder();
+        while (iterator.hasNext()) {
             sb.append(iterator.next()).append(" , ");
         }
-        Timber.d("queue is "+ sb);
+        Timber.d("queue is " + sb);
     }
 
     private void removeItemFromQueue(ArrayList<Integer> idList, ArrayList<Integer> allGettedIds) {
-        boolean find=false;
+        boolean find = false;
         int id;
-        for(int i=0;i<idList.size();i++){
-            id=idList.get(i);
-            for(int j=0;j<allGettedIds.size();j++){
-                if(id==allGettedIds.get(j)){
-                    find=true;
+        for (int i = 0; i < idList.size(); i++) {
+            id = idList.get(i);
+            for (int j = 0; j < allGettedIds.size(); j++) {
+                if (id == allGettedIds.get(j)) {
+                    find = true;
                     continue;
                 }
             }
-            if(!find){
+            if (!find) {
                 idList.remove(i);
                 return;
             }
         }
     }
-//    private void rememberToDeQueue(int id){
-//        idStack.push(id);
-//        Iterator<Integer> iterator= idStack.iterator();
-//        StringBuilder sb=new StringBuilder();
-//        while (iterator.hasNext()){
-//            sb.append(iterator.next()).append(" , ");
-//        }
-//        Log.i(TAG, "queue is"+ sb);
-//    }
 
-//    private void
-
-    private boolean normalAutofirstTimeSearch(String url) {
-        return idList.size()<QUEUE_MAX_CAPACITY;
+    private boolean normalAutofirstTimeSearch() {
+        return idList.size() < QUEUE_MAX_CAPACITY;
     }
 
-    private int getId(Element element) {
-        String linkStr = getLink(element);
-        Pattern pattern = Pattern.compile("(\\d+)\\?");
-        Matcher m = pattern.matcher(linkStr);
-        if (m.find()) {
-//            Log.v(TAG, m.group(0));
-            try {
-                return Integer.valueOf(m.group(1));
-            } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                return -1;
+    private List<Auto> extractAutos(String html) {
+        Matcher matcher = autoRelatedDataPattern.matcher(html);
+        List<Auto> autoRelatedData = new LinkedList<>();
+        int numberOfGettingAuotoData = 0;
+        while (matcher.find()) {
+            if (matcher.group(0) != null) {
+                String data = matcher.group(0);
+                if (!data.contains("upsellAd")) {
+                    autoRelatedData.add(new Auto(matcher.group(0)));
+                } else {
+                    continue;
+                }
+            }
+            if (++numberOfGettingAuotoData >= QUEUE_MAX_CAPACITY) {
+                break;
             }
         }
-        return -1;
-    }
-
-    private boolean getDealer(Elements detailBox) {
-        try {
-            if (detailBox.get(0).getElementsByClass(AUTO_DETAIL_DEALER_NAME).isEmpty()) {
-                return true;
-            }
-            return false;
-        } catch (NullPointerException e) {
-            return false;
-        }
-    }
-
-    private String getSeller(Elements detailBox) {
-        try {
-            if(detailBox.get(0).children().size()>5) {
-                return detailBox.get(0).child(5).text();
-            }
-        } catch (NullPointerException e) {
-
-        }
-        return "";
-    }
-
-    private String getYearAndMilliage(Elements detailBox) {
-        try {
-            Node node = detailBox.get(0).childNode(8);
-//            Log.v(TAG, "childNode=" + node.toString());
-            if (node instanceof TextNode) {
-                return ((TextNode) node).text();
-            }
-            return null;
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
-
-    private int getAutoPrice(Elements detailBox) {
-        try {
-            return getPrice(detailBox.get(0).child(3).text());
-        } catch (NullPointerException e) {
-            return -1;
-        }
-    }
-
-    private String getAutoDescription(Elements detailBox) {
-        try {
-//            Timber.d("childnodes="+detailBox.get(0).child(2).childNodeSize());
-            return detailBox.get(0).child(2).text();
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
-
-    private String getAutoName(Elements detailBox) {
-        try {
-            return detailBox.get(0).child(0).text()+detailBox.get(0).childNode(2).toString();
-        } catch (NullPointerException e) {
-            return null;
-        }
-
-    }
-
-    private String getLink(Element element) {
-        try {
-            return element.child(0).child(0).attr("href");
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
-
-    private String getImageUrl(Elements element) {
-        try {
-            return element.get(0).child(2).attr("src");
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
-
-    private int getPrice(String str) {
-        str=str.replaceAll("\\s+","");
-        Pattern pattern = Pattern.compile("\\d+");
-        Matcher m = pattern.matcher(str);
-        if (m.find()) {
-//            Log.v(TAG, m.group(0));
-            try {
-                return Integer.valueOf(m.group(0));
-            } catch (NumberFormatException e) {
-                return -1;
-            }
-        }
-        return -1;
-    }
-
-    private String getStringOnlyWithAutoHTMLData(String html) {
-        Matcher matcher=mPattern.matcher(html);
-        StringBuilder stringBuilder=new StringBuilder();
-        int numberOfGettingAuotoData=0;
-        while (matcher.find()){
-            if(matcher.group(0)!=null){
-                stringBuilder.append(matcher.group(0));
-            }
-            if (++numberOfGettingAuotoData>=QUEUE_MAX_CAPACITY){break; }
-        }
-        return stringBuilder.toString();
+        return autoRelatedData;
     }
 
     @Override
     public void run() {
-        Thread curThread=Thread.currentThread();
+        Thread curThread = Thread.currentThread();
         while (!curThread.isInterrupted()) {
             try {
                 parse();
@@ -425,11 +289,8 @@ public class HTMLParser implements Runnable,Constants.HTMLParserConstants{
         }
     }
 
-    public interface NewAutoListener {
-        void newAutoEvent(Auto auto);
-    }
-
     public void setOnNewAutoListener(NewAutoListener listener) {
-        this.listener=listener;
+        this.listener = listener;
     }
 }
+

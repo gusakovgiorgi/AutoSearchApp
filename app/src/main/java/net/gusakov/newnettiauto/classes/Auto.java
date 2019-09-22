@@ -1,129 +1,118 @@
 package net.gusakov.newnettiauto.classes;
 
-/**
- * Created by hasana on 4/3/2017.
- */
+import android.support.annotation.WorkerThread;
 
 public class Auto {
-    private int id;
+    private AutoInfoExtractor autoInfoExtractor;
+    private Integer id;
     private String name;
     private String imageUrlString;
     private String description;
-    private int price;
+    private Integer price;
     private String yearAndMileage;
     private String seller;
     private String link;
     private String phoneNumberURI;
-    private boolean isDealer;
-
-
-
+    private Boolean isDealer;
     private long timestamp;
 
-    public Auto(){
+    public Auto(String autoRelatedData) {
+        autoInfoExtractor = new AutoInfoExtractor(autoRelatedData);
+        timestamp = System.currentTimeMillis();
     }
 
-    public Auto(int id,String name, String description, int price, String yearAndMileage, String seller,String link,String phoneNumberURI, boolean isDealer,long timestamp,String imageUrlString) {
-        this.id=id;
+    public Auto(Integer id, String name, String description, Integer price, String yearAndMileage, String seller, String link, String phoneNumberURI, Boolean isDealer, long timestamp,String imageUrlString) {
+        this.autoInfoExtractor = autoInfoExtractor;
+        this.id = id;
         this.name = name;
+        this.imageUrlString = imageUrlString;
         this.description = description;
         this.price = price;
         this.yearAndMileage = yearAndMileage;
         this.seller = seller;
-        this.link=link;
-        this.phoneNumberURI =phoneNumberURI;
+        this.link = link;
+        this.phoneNumberURI = phoneNumberURI;
         this.isDealer = isDealer;
-        this.timestamp=timestamp;
-        this.imageUrlString=imageUrlString;
-    }
-    public long getTimestamp() {
-        return timestamp;
-    }
-    public static boolean isValidId(int id){
-        return id>0;
-    }
-
-    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public static boolean isValidId(int id) {
+        return id > 0;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public void setYearAndMileage(String yearAndMileage) {
-        this.yearAndMileage = yearAndMileage;
-    }
-
-    public void setSeller(String seller) {
-        this.seller = seller;
-    }
-
-    public void setDealer(boolean dealer) {
-        isDealer = dealer;
-    }
-    public int getId() {
+    public Integer getId() {
+        if (id == null) {
+            id = autoInfoExtractor.getId();
+        }
         return id;
     }
 
-    public String getLink() {
-        return link;
-    }
-
-    public String getPhoneNumberURI() {
-        return phoneNumberURI;
-    }
-
-    public void setPhoneNumberURI(String phoneNumberURI) {
-        this.phoneNumberURI = phoneNumberURI;
-    }
-
     public String getName() {
+        if (name == null) {
+            name = autoInfoExtractor.getName();
+        }
         return name;
     }
 
+    public String getImageUrlString() {
+        if (imageUrlString == null) {
+            imageUrlString = autoInfoExtractor.getImageUrlString();
+        }
+        return imageUrlString;
+    }
+
     public String getDescription() {
+        if (description == null) {
+            description = autoInfoExtractor.getDescription();
+        }
         return description;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
+        if (price == null) {
+            price = autoInfoExtractor.getPrice();
+        }
         return price;
     }
 
     public String getYearAndMileage() {
+        if (yearAndMileage == null) {
+            yearAndMileage = autoInfoExtractor.getYear() + " " + autoInfoExtractor.getMileage();
+        }
         return yearAndMileage;
     }
 
     public String getSeller() {
+        if (seller == null) {
+            seller = autoInfoExtractor.getSeller();
+        }
         return seller;
     }
 
-    public boolean isDealer() {
+    public String getLink() {
+        if (link == null) {
+            link = autoInfoExtractor.getLink();
+        }
+        return link;
+    }
+
+    @WorkerThread
+    public String getPhoneNumberURI() {
+        if (phoneNumberURI == null) {
+            phoneNumberURI = autoInfoExtractor.getPhoneNumberUri(getLink());
+        }
+        return phoneNumberURI;
+    }
+
+    public Boolean isDealer() {
+        if (isDealer == null) {
+            isDealer = autoInfoExtractor.isDealer();
+        }
         return isDealer;
-    }
-
-    public String getImageUrlString() {
-        return imageUrlString;
-    }
-
-    public void setImageUrlString(String imageUrlString) {
-        this.imageUrlString = imageUrlString;
     }
 }
 
